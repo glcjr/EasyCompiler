@@ -11,7 +11,7 @@ using EasyCompile;
 /*********************************************************************************************************************************
 Copyright and Licensing Message
 
-This code is copyright 2017 Gary Cole Jr. 
+This code is copyright 2018 Gary Cole Jr. 
 
 This code is licensed by Gary Cole to others under the GPLv.3 https://opensource.org/licenses/GPL-3.0 
 If you find the code useful or just feel generous a donation is appreciated.

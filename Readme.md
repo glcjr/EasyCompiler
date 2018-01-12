@@ -4,6 +4,7 @@
    
    It is (I believe) Net Standard 2.0 compliant and needs the Net Standard 2.0 compliant System.Codedom library from Microsoft.
    The System.Codedom is found here: https://www.nuget.org/packages/System.CodeDom/4.4.0
+   
    The Nugent Package Installer Console Command: Install-Package System.CodeDom -Version 4.4.0
    
    Simple use:
@@ -18,7 +19,7 @@
        compile.Compile();
        if (compile.Success)
             Console.WriteLine($"Successfully compiled and saved at {compile.GetName()}");
-        else
+       else
             Console.WriteLine($"There were {compile.ErrorCount} errors{Environment.NewLine}{compile.GetErrorsAsString()}");
         
    If you want to compile a debug build you would do the following:
@@ -46,6 +47,7 @@
          Compiler compile = new Compiler(CompilerLanguages.csharp);
          compile.AddAssemblyLocation("System.RunTime.dll");
          compile.Compile();
+		 
    You could also do the following which adds some of the more common net framework dlls:
          Compiler compile = new Compiler(CompilerLanguages.csharp);
          compile.AddUsefulWindowsDesktopAssemblies();
