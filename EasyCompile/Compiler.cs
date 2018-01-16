@@ -375,7 +375,16 @@ namespace EasyCompile
         private object LaunchCompiledAssembly()
         {
             Assembly Compiled = Results.CompiledAssembly;
-            Type type = Compiled.GetTypes()[0];
+            int index = 0; int foundindex = 0;
+            Type[] Types = Compiled.GetTypes();
+            foreach (var t in Types)
+            {
+                foreach (var m in t.GetMethods())
+                    if (m.Name.Equals(MethodToLaunch))
+                        foundindex = index;
+                index++;
+            }
+            Type type = Compiled.GetTypes()[foundindex];
             object obj = Activator.CreateInstance(type);
 
             return type.InvokeMember(MethodToLaunch, BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, ParameterstoPass);
