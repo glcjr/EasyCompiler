@@ -60,10 +60,9 @@ namespace TestCompiler
             else
                 Console.WriteLine($"There were {compile.ErrorCount} errors{Environment.NewLine}{compile.GetErrorsAsString()}");
 
-          
-          Assembly Compiled = compile.GetCompiledAssembly();
+          // To Retrieve and Run the Assembly from outside the compiler and in the main program:
 
-            // To Run the Assembly:
+          Assembly Compiled = compile.GetCompiledAssembly();
 
             Type type = Compiled.GetTypes()[0];
             object obj = Activator.CreateInstance(type);
@@ -71,6 +70,11 @@ namespace TestCompiler
             Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("Also can launch from here.");
+
+            // InvokeMember also returns an Object so if the method returns anything I believe you can access it by Object returnstuff = type.InvokeMember... 
+            // I have yet to try that so if I'm incorrect... 
+            // I problem should look at having a method to compile and return a method's return stuff inside the compiler too. That will be added to the to do list.
+
             type.InvokeMember("Main", BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, null);
 
             Console.WriteLine();
