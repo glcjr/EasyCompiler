@@ -118,6 +118,7 @@ namespace EasyCompile
         private bool Optimize = true;
         private bool LaunchAfterCompile = false;
         private string MethodToLaunch;
+        private object[] ParameterstoPass = null;
         
         public int ErrorCount
         {
@@ -340,10 +341,17 @@ namespace EasyCompile
             CompileToMemory = true;
         }
         //Allows the option to launch the compiled script after compiling
-        public void SetToLaunchAfterCompile(string method)
+        public void SetToLaunchAfterCompile(string method="Main", object[]pars = null)
         {
             LaunchAfterCompile = true;
             MethodToLaunch = method;
+            ParameterstoPass = pars;
+        }
+        public void SetToLaunchAfterCompile(object[] pars, string method = "Main")
+        {
+            LaunchAfterCompile = true;
+            MethodToLaunch = method;
+            ParameterstoPass = pars;
         }
         // Prepares the output file name for the compiler. It either creates a name or uses the passed in name. And it makes sure the file has the proper exetension.
         private string RetriveName()
@@ -392,7 +400,7 @@ namespace EasyCompile
                     Type type = Compiled.GetTypes()[0];
                     object obj = Activator.CreateInstance(type);
 
-                    type.InvokeMember(MethodToLaunch, BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, null);
+                    type.InvokeMember(MethodToLaunch, BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, ParameterstoPass);
                 }
                 return true;
             }

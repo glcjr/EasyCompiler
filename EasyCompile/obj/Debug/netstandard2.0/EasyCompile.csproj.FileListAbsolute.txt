@@ -6,4 +6,3 @@ C:\Users\Downstairs Computer\source\repos\EasyCompile\EasyCompile\obj\Debug\nets
 C:\Users\Downstairs Computer\source\repos\EasyCompile\EasyCompile\bin\Debug\netstandard2.0\EasyCompile.pdb
 C:\Users\Downstairs Computer\source\repos\EasyCompile\EasyCompile\obj\Debug\netstandard2.0\EasyCompile.dll
 C:\Users\Downstairs Computer\source\repos\EasyCompile\EasyCompile\obj\Debug\netstandard2.0\EasyCompile.pdb
-C:\Users\Downstairs Computer\source\repos\EasyCompile\EasyCompile\obj\Debug\netstandard2.0\EasyCompile.csprojResolveAssemblyReference.cache

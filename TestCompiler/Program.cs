@@ -49,34 +49,37 @@ namespace TestCompiler
     {
         static void Main(string[] args)
         {
-            string sourcestring = "using System; namespace HelloWorld    {        class Program        {            static public void Main()            {                Console.WriteLine(\"Hello World\");     Console.WriteLine(\"Press a key\"); Console.ReadKey();       }        }    }";
+            string sourcestring = "using System; namespace HelloWorld    {        class Program        {            static public void Main(params string[] Args)            {                string message = \"\"; if (Args.Length > 0) message = Args[0];Console.WriteLine(\"Hello World \" + message);     Console.WriteLine(\"Press a key\"); Console.ReadKey();       }        }    }";
             Compiler compile = new Compiler(CompilerLanguages.csharp, sourcestring);
             compile.SetResultFileName($"{AppDomain.CurrentDomain.BaseDirectory}\\helloworld");
           
-            compile.SetToLaunchAfterCompile("Main");
+            compile.SetToLaunchAfterCompile(new string[] { "Let's get started" });
             compile.Compile();
             if (compile.Success)
                 Console.WriteLine($"Compiled successfully to {compile.GetName()}");
             else
                 Console.WriteLine($"There were {compile.ErrorCount} errors{Environment.NewLine}{compile.GetErrorsAsString()}");
 
-            // below also works. Only commented out because I added the ability to Set the launch after compile.
-            //Assembly Compiled = compile.GetCompiledAssembly();
+          
+          Assembly Compiled = compile.GetCompiledAssembly();
 
-            //// To Run the Assembly:
+            // To Run the Assembly:
 
-            //Type type = Compiled.GetTypes()[0];
-            //object obj = Activator.CreateInstance(type);
-            
-            //type.InvokeMember("Main", BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, null);
+            Type type = Compiled.GetTypes()[0];
+            object obj = Activator.CreateInstance(type);
 
-            //Console.WriteLine();
-            //Console.WriteLine();
-                
-            ////Can also see what methods are available by doing this:
-            //MethodInfo[] methods = type.GetMethods();
-            //foreach (var meth in methods)
-            //    Console.WriteLine(meth.Name);
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("Also can launch from here.");
+            type.InvokeMember("Main", BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, null);
+
+            Console.WriteLine();
+            Console.WriteLine();
+
+            //Can also see what methods are available by doing this:
+            MethodInfo[] methods = type.GetMethods();
+            foreach (var meth in methods)
+                Console.WriteLine(meth.Name);
 
 
         }
