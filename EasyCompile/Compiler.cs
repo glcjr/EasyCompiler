@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 /*********************************************************************************************************************************
 Copyright and Licensing Message
@@ -115,6 +116,9 @@ namespace EasyCompile
         private int WarningLevel = 3;
         private bool TreatWarningAsError = false;
         private bool Optimize = true;
+        private bool LaunchAfterCompile = false;
+        private string MethodToLaunch;
+        
         public int ErrorCount
         {
             get
@@ -335,6 +339,12 @@ namespace EasyCompile
         {
             CompileToMemory = true;
         }
+        //Allows the option to launch the compiled script after compiling
+        public void SetToLaunchAfterCompile(string method)
+        {
+            LaunchAfterCompile = true;
+            MethodToLaunch = method;
+        }
         // Prepares the output file name for the compiler. It either creates a name or uses the passed in name. And it makes sure the file has the proper exetension.
         private string RetriveName()
         {
@@ -371,16 +381,31 @@ namespace EasyCompile
                 parameters.GenerateInMemory = true;
             else
                 parameters.OutputAssembly = RetriveName();
-            Results = CodeProvider.CompileAssemblyFromSource(parameters, GetAllSource());
+            Results = CodeProvider.CompileAssemblyFromSource(parameters, GetAllSource());            
             if (Results.Errors.Count > 0)
                 return false;
             else
+            {
+                if (LaunchAfterCompile)
+                {
+                    Assembly Compiled = Results.CompiledAssembly;
+                    Type type = Compiled.GetTypes()[0];
+                    object obj = Activator.CreateInstance(type);
+
+                    type.InvokeMember(MethodToLaunch, BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, null);
+                }
                 return true;
+            }
         }
         // This method returns the compiler errors as a COmpiler error collection
         public CompilerErrorCollection GetErrors()
         {
             return Results.Errors;
+        }
+        //Method to allow retrieval of the compiled Assembly
+        public Assembly GetCompiledAssembly()
+        {
+            return Results.CompiledAssembly;
         }
         //This creates a list of errors the compiler found to be displayed to the user.
         public string GetErrorsAsString()
