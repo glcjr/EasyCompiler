@@ -372,7 +372,25 @@ namespace EasyCompile
         // This method prepares the compiler options and then compiles the code
         // It returns true if the compile is successful without errors
         // It returns false if the compile results in errors.
-        public bool Compile()
+        private object LaunchCompiledAssembly()
+        {
+            Assembly Compiled = Results.CompiledAssembly;
+            Type type = Compiled.GetTypes()[0];
+            object obj = Activator.CreateInstance(type);
+
+            return type.InvokeMember(MethodToLaunch, BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, ParameterstoPass);
+        }
+        public object CompileRun()
+        {
+            CompileSource();
+            if (Results.Errors.Count == 0)
+            {
+                return LaunchCompiledAssembly();
+            }
+            else
+                return Results.Errors;
+        }
+        private void CompileSource()
         {
             CompilerParameters parameters = new CompilerParameters();
             parameters.GenerateExecutable = CompileToExecutable;
@@ -389,18 +407,18 @@ namespace EasyCompile
                 parameters.GenerateInMemory = true;
             else
                 parameters.OutputAssembly = RetriveName();
-            Results = CodeProvider.CompileAssemblyFromSource(parameters, GetAllSource());            
+            Results = CodeProvider.CompileAssemblyFromSource(parameters, GetAllSource());
+        }
+        public bool Compile()
+        {
+            CompileSource();      
             if (Results.Errors.Count > 0)
                 return false;
             else
             {
                 if (LaunchAfterCompile)
                 {
-                    Assembly Compiled = Results.CompiledAssembly;
-                    Type type = Compiled.GetTypes()[0];
-                    object obj = Activator.CreateInstance(type);
-
-                    type.InvokeMember(MethodToLaunch, BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, ParameterstoPass);
+                    LaunchCompiledAssembly();
                 }
                 return true;
             }

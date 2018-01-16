@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace TestCompiler
     {
         static void Main(string[] args)
         {
-            string sourcestring = "using System; namespace HelloWorld    {        class Program        {            static public void Main(params string[] Args)            {                string message = \"\"; if (Args.Length > 0) message = Args[0];Console.WriteLine(\"Hello World \" + message);     Console.WriteLine(\"Press a key\"); Console.ReadKey();       }        }    }";
+            string sourcestring = "using System; namespace HelloWorld    {        class Program        {    static public int Add(int a, int b) {return a + b;}        static public void Main(params string[] Args)            {                string message = \"\"; if (Args.Length > 0) message = Args[0];Console.WriteLine(\"Hello World \" + message);     Console.WriteLine(\"Press a key\"); Console.ReadKey();       }        }    }";
             Compiler compile = new Compiler(CompilerLanguages.csharp, sourcestring);
             compile.SetResultFileName($"{AppDomain.CurrentDomain.BaseDirectory}\\helloworld");
           
@@ -72,13 +73,24 @@ namespace TestCompiler
             Console.WriteLine("Also can launch from here.");
 
             // InvokeMember also returns an Object so if the method returns anything I believe you can access it by Object returnstuff = type.InvokeMember... 
-            // I have yet to try that so if I'm incorrect... 
-            // I problem should look at having a method to compile and return a method's return stuff inside the compiler too. That will be added to the to do list.
+            
 
             type.InvokeMember("Main", BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, null);
 
             Console.WriteLine();
             Console.WriteLine();
+
+            // Can Also use CompileRun to run a Method with return value in the Assembly
+            compile.SetToLaunchAfterCompile("Add", new object[] { 3,4});
+            compile.SetToMemoryOutputOnly(); // because the previously created exe causes an error if its compiled again
+            object Value = compile.CompileRun(); 
+            Type t = Value.GetType();
+            if (t.Equals(typeof(CompilerErrorCollection)))
+                foreach (CompilerError e in (CompilerErrorCollection)Value)
+                    Console.WriteLine(e.ErrorText);
+            else
+                Console.WriteLine(Value);
+
 
             //Can also see what methods are available by doing this:
             MethodInfo[] methods = type.GetMethods();
