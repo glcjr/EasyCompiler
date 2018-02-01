@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 
 /*********************************************************************************************************************************
 Copyright and Licensing Message
@@ -389,6 +390,14 @@ namespace EasyCompile
 
             return type.InvokeMember(MethodToLaunch, BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, ParameterstoPass);
         }
+        /// <summary>
+        /// An attempt to write an Async method for compiling and running
+        /// </summary>
+        /// <returns></returns>
+        public async Task<object> CompileRunAsync()
+        {
+            return await Task.Factory.StartNew(() => CompileRun());
+        }
         public object CompileRun()
         {
             CompileSource();
@@ -417,6 +426,14 @@ namespace EasyCompile
             else
                 parameters.OutputAssembly = RetriveName();
             Results = CodeProvider.CompileAssemblyFromSource(parameters, GetAllSource());
+        }
+        /// <summary>
+        /// An attempt to write an Async method for compiling
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> CompileAsync()
+        {
+            return await Task.Factory.StartNew(() => Compile());
         }
         public bool Compile()
         {
