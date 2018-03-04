@@ -3,6 +3,7 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 
 /*********************************************************************************************************************************
@@ -119,6 +120,7 @@ namespace EasyCompile
         private bool Optimize = true;
         private bool LaunchAfterCompile = false;
         private string MethodToLaunch;
+        private string InstanceToCreate = "";
         private object[] ParameterstoPass = null;
         
         public int ErrorCount
@@ -199,6 +201,10 @@ namespace EasyCompile
         public void SetResultFileName(string file)
         {
             FileName = file;
+        }
+        public void SetInstanceToCreate(string instance)
+        {
+            InstanceToCreate = instance;
         }
         //This method allows you to add a source string to the list of source strings that will be compiled.
         public void AddSourceString(string source)
@@ -370,25 +376,67 @@ namespace EasyCompile
         {
             return FileName;
         }
+        public byte[] CompiledAssemblyRAW
+        {
+            get
+            {
+                Assembly Compiled = Results.CompiledAssembly;
+                var formatter = new BinaryFormatter();
+                var ms = new MemoryStream();
+                formatter.Serialize(ms, Compiled);
+                return ms.GetBuffer();
+               
+            }
+    }
         // This method prepares the compiler options and then compiles the code
         // It returns true if the compile is successful without errors
         // It returns false if the compile results in errors.
+
         private object LaunchCompiledAssembly()
         {
             Assembly Compiled = Results.CompiledAssembly;
             int index = 0; int foundindex = 0;
             Type[] Types = Compiled.GetTypes();
-            foreach (var t in Types)
+            bool found = false;
+            if (InstanceToCreate != string.Empty)
             {
-                foreach (var m in t.GetMethods())
-                    if (m.Name.Equals(MethodToLaunch))
+                
+                foreach (var t in Types)
+                {
+                    if (t.Name.Equals(InstanceToCreate))
+                    {
                         foundindex = index;
-                index++;
+                        found = true;
+                    }
+                    index++;
+                }
+                if (!(found))
+                {
+                    InstanceToCreate = string.Empty;
+                    return LaunchCompiledAssembly();
+                }
             }
-            Type type = Compiled.GetTypes()[foundindex];
-            object obj = Activator.CreateInstance(type);
-
-            return type.InvokeMember(MethodToLaunch, BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, ParameterstoPass);
+            else
+            {
+                foreach (var t in Types)
+                {
+                    foreach (var m in t.GetMethods())
+                        if (m.Name.Equals(MethodToLaunch))
+                        {
+                            foundindex = index;
+                            found = true;
+                        }
+                    index++;
+                }
+            }
+            if (found)
+            {
+                Type type = Compiled.GetTypes()[foundindex];
+                object obj = Activator.CreateInstance(type);
+                return type.InvokeMember(MethodToLaunch, BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, ParameterstoPass);
+            }
+            else
+                throw new Exception("Unable to find Method in Assembly.");
         }
         /// <summary>
         /// An attempt to write an Async method for compiling and running
