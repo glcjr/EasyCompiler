@@ -108,3 +108,4 @@ C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler2\obj\Debug\Te
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler2\obj\Debug\TestCompiler2.csproj.CoreCompileInputs.cache
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler2\obj\Debug\TestCompiler2.exe
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler2\obj\Debug\TestCompiler2.pdb
+C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler2\obj\Debug\TestCompiler2.csproj.CopyComplete
