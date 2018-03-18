@@ -56,6 +56,20 @@ namespace TestCompiler
           
             compile.SetToLaunchAfterCompile(new string[] { "Let's get started" });
             compile.Compile();
+            // find all namespaces from built in method
+            if (compile.FindAllNameSpaces("Program", out List<string> namespaces))
+            {
+                Console.WriteLine("Namespaces that contain the class program: ");
+                foreach (var s in namespaces)
+                    Console.WriteLine(s);
+            }
+            // find all methods of a class from built in method
+            if (compile.FindAllMethods("Program", out List<String> methodnames))
+            {
+                Console.WriteLine("All methods in the class program:");
+                foreach (var m in methodnames)
+                    Console.WriteLine(m);
+            }
             if (compile.Success)
                 Console.WriteLine($"Compiled successfully to {compile.GetName()}");
             else

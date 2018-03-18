@@ -520,6 +520,106 @@ namespace EasyCompile
             }
             return resultofcompile;
         }
-
+        public bool FindClass(string methodname, out string ClassName)
+        {
+            ClassName = "";
+            if ((ErrorCount == 0) && (Results != null))
+            {
+                Assembly assem = Results.CompiledAssembly;
+                Type[] ty = assem.GetTypes();
+                Type thisone = ty[0];
+                foreach (var tp in ty)
+                {
+                    MethodInfo[] methods = tp.GetMethods();
+                    foreach (var m in methods)
+                    {
+                        if (m.Name.Equals(methodname))
+                        {
+                            ClassName = tp.Name;
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        public bool FindAllMethods(string classname, out List<string> MethodNames)
+        {
+            MethodNames = new List<string>();
+            if ((ErrorCount == 0) && (Results != null))
+            {
+                Assembly assem = Results.CompiledAssembly;
+                Type[] ty = assem.GetTypes();
+                Type thisone = ty[0];
+                foreach (var tp in ty)
+                {
+                    if (tp.Name.Equals(classname))
+                    {
+                        MethodInfo[] methods = tp.GetMethods();
+                        foreach (var m in methods)
+                            MethodNames.Add(m.Name);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        public bool FindAllClasses(string methodname, out List<string> ClassNames)
+        {
+            ClassNames = new List<string>();
+            if ((ErrorCount == 0) && (Results != null))
+            {
+                Assembly assem = Results.CompiledAssembly;
+                Type[] ty = assem.GetTypes();
+                Type thisone = ty[0];
+                foreach (var tp in ty)
+                {                    
+                    MethodInfo[] methods = tp.GetMethods();
+                    foreach (var m in methods)
+                    {
+                        if (m.Name.Equals(methodname))
+                        {
+                            ClassNames.Add(tp.Name);
+                        }
+                    }
+                }
+            }
+            return ClassNames.Count > 0;
+        }
+        public bool FindNameSpace(string classname, out string NamespaceName)
+        {
+            NamespaceName = "";
+            if ((ErrorCount == 0) && (Results != null))
+            {
+                Assembly assem = Results.CompiledAssembly;
+                Type[] types = assem.GetTypes();
+                foreach (var t in types)
+                {
+                    if (t.Name.Equals(classname))
+                    {
+                        NamespaceName = t.Namespace;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        public bool FindAllNameSpaces(string classname, out List<string> NamespaceNames)
+        {
+            NamespaceNames = new List<string>();
+            if ((ErrorCount == 0) && (Results != null))
+            {
+                Assembly assem = Results.CompiledAssembly;
+                Type[] types = assem.GetTypes();
+                foreach (var t in types)
+                {
+                    if (t.Name.Equals(classname))
+                    {
+                        NamespaceNames.Add(t.Namespace);
+                    }
+                }
+            }
+            return NamespaceNames.Count > 0;
+        }
     }
 }

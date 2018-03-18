@@ -98,11 +98,10 @@ C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\bin\Debug\Sys
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\bin\Debug\System.Xml.XPath.dll
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\bin\Debug\System.Xml.XPath.XDocument.dll
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\bin\Debug\EasyCompile.dll
-C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\bin\Debug\EasyCompile.pdb
-C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\obj\Debug\TestCompiler.csprojResolveAssemblyReference.cache
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\obj\Debug\TestCompiler.exe.config
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\obj\Debug\TestCompiler.csproj.CoreCompileInputs.cache
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\obj\Debug\TestCompiler.exe
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\obj\Debug\TestCompiler.pdb
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\bin\Debug\System.CodeDom.dll
 C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\obj\Debug\TestCompiler.csproj.CopyComplete
+C:\Users\Downstairs Computer\source\repos\EasyCompile\TestCompiler\obj\Debug\TestCompiler.csprojResolveAssemblyReference.cache
