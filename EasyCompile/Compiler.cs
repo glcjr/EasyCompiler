@@ -243,6 +243,36 @@ namespace EasyCompile
                 Source.Add(s);
             return Source.ToArray();
         }
+        public bool AdddotNetNameSpace(string NameSpace, string MinFrameworkVersion)
+        {
+            bool found = false;
+            string path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            path += @"\Reference Assemblies\Microsoft\Framework\.NETFramework\";
+            string[] directories = Directory.GetDirectories(path);
+            foreach (var d in directories)
+            {
+                if (d.CompareTo(path + MinFrameworkVersion) >= 0)
+                {
+                    string test = d + $@"\{NameSpace}.dll";
+                    if (File.Exists(test))
+                    {
+                        RemoveNameSpace(NameSpace);
+                        found = true;
+                        AddAssemblyLocation(test);                        
+                    }
+                }
+            }
+            return found;
+        }
+        private void RemoveNameSpace(string target)
+        {
+            foreach (var assm in Assemblies)
+                if (assm.Contains($"{target}.dll"))
+                {
+                    Assemblies.Remove(assm);
+                    break;
+                }
+        }
         //This method allows mutliple dlls to be added to the assemblies list that are referenced in the source code that is being compiled.
         public void AddAssemblyLocations(params string[] assemblies)
         {
@@ -266,7 +296,7 @@ namespace EasyCompile
         //This adds several of the more common desktop .net framework dlls to the assemblies list so that its simpler to add them.
         //You can also add these individually if there are too many included that are unneeded.
         public void AddUsefulWindowsDesktopAssemblies()
-        {
+        {            
             AddAssemblyLocations("System.Windows.dll", "System.RunTime.dll", "System.IO.dll", "System.Reflection.dll", "System.IO.Compression.dll", "System.dll",
                 "System.Xaml.dll", "System.Xml.dll", "System.Core.dll", "System.Data.dll", "mscorlib.dll", "System.Drawing.dll");
         }
