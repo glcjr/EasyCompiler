@@ -243,23 +243,60 @@ namespace EasyCompile
                 Source.Add(s);
             return Source.ToArray();
         }
-        public bool AdddotNetNameSpace(string NameSpace, string MinFrameworkVersion)
+        public bool AdddotNetNameSpace(string NameSpace, string MinFrameworkVersion, bool BypassGAC=false)
         {
             bool found = false;
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-            path += @"\Reference Assemblies\Microsoft\Framework\.NETFramework\";
+            string location = "";
+            string path = "";
+            if (!(BypassGAC))
+            {
+                path = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+                path += $@"\Microsoft.NET\assembly\GAC_MSIL\{NameSpace}";
+                found = FindDll(path, NameSpace, out location);
+                if (!(found))
+                {
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+                    path += $@"\Microsoft.NET\assembly\GAC_32\{NameSpace}";
+                    found = FindDll(path, NameSpace, out location);
+                }
+            }
+            if (!(found))
+            {
+                path = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                path += @"\Reference Assemblies\Microsoft\Framework\.NETFramework\";
+                string[] directories = Directory.GetDirectories(path);
+                foreach (var d in directories)
+                {
+                    if (d.CompareTo(path + MinFrameworkVersion) >= 0)
+                    {
+                        string test = d + $@"\{NameSpace}.dll";
+                        if (File.Exists(test))
+                        {
+                            location = test;
+                            found = true;                            
+                        }
+                    }
+                }
+            }
+            if (found)
+            {
+                RemoveNameSpace(NameSpace);
+                AddAssemblyLocation(location);
+            }
+            return found;
+        }
+        private bool FindDll(string path, string targetfilename, out string location)
+        {
+            bool found = false;
+            location = "";
             string[] directories = Directory.GetDirectories(path);
             foreach (var d in directories)
             {
-                if (d.CompareTo(path + MinFrameworkVersion) >= 0)
+                string test = d + $@"\{targetfilename}.dll";
+                if (File.Exists(test))
                 {
-                    string test = d + $@"\{NameSpace}.dll";
-                    if (File.Exists(test))
-                    {
-                        RemoveNameSpace(NameSpace);
-                        found = true;
-                        AddAssemblyLocation(test);                        
-                    }
+                    found = true;
+                    location = test;
                 }
             }
             return found;
